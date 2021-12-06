@@ -11,7 +11,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'controllers/application_controller.dart';
 import 'lang/app_translation.dart';
 import 'lang/lang_service.dart';
-import 'routes/app_pages.dart';
+import 'routes/routes.dart';
 import 'theme/theme.dart';
 import 'theme/theme_service.dart';
 import 'utils/hidekeyboard.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       headerBuilder: () => const MaterialClassicHeader(),
       footerBuilder: () => const ClassicFooter(),
       child: GetMaterialApp(
-        title: 'Flutter Template',
+        title: 'Apple Name',
         navigatorKey: Get.key,
         debugShowCheckedModeBanner: true,
         defaultTransition: Transition.native,
@@ -70,8 +70,8 @@ class MyApp extends StatelessWidget {
           );
           return BotToastInit()(context, _child);
         },
-        getPages: AppPages.pages,
-        initialRoute: Routes.home,
+        getPages: RouteGet.getPages,
+        initialRoute: RouteGet.main,
       ),
     );
   }
