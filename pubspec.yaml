@@ -50,9 +50,9 @@ dependencies:
   permission_handler: ^8.3.0
   #dio
   dio: ^4.0.4
-  cookie_jar: 3.0.1
-  dio_cache_interceptor: ^3.0.3
-  dio_cookie_manager: ^2.0.0
+#  cookie_jar: 3.0.1
+#  dio_cache_interceptor: ^3.0.3
+#  dio_cookie_manager: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

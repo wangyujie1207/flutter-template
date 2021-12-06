@@ -14,6 +14,7 @@ import 'lang/lang_service.dart';
 import 'routes/routes.dart';
 import 'theme/theme.dart';
 import 'theme/theme_service.dart';
+import 'utils/dependency_injection.dart';
 import 'utils/hidekeyboard.dart';
 import 'utils/router_observer.dart';
 
@@ -24,9 +25,7 @@ void main() async{
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  Get.put<LangService>(LangService());
-  Get.put<EventBus>(EventBus());
-  Get.put<ApplicationController>(ApplicationController());
+  await DependencyInjection.init();
   runApp(const MyApp());
 }
 

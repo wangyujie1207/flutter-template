@@ -1,23 +1,21 @@
 import 'package:dio/dio.dart';
-
+import 'package:flutter_template/request/src/http_error.dart';
 import 'app_dio.dart';
-import 'parser/http_response.dart';
+import 'http_resp.dart';
 import 'http_config.dart';
-import 'parser/http_parse.dart';
-import 'transformer/http_transformer.dart';
-
+typedef IsSuccessResponse = bool Function(Response<dynamic> response);
 class HttpClient {
   late final AppDio _dio;
+  final IsSuccessResponse checkSuccessFn;
 
-  HttpClient({BaseOptions? options, HttpConfig? dioConfig})
+  HttpClient({BaseOptions? options, HttpConfig? dioConfig, required this.checkSuccessFn})
       : _dio = AppDio(options: options, dioConfig: dioConfig);
 
   Future<HttpResponse> get(String uri,
       {Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onReceiveProgress,
-        HttpTransformer? httpTransformer}) async {
+      Options? options,
+      CancelToken? cancelToken,
+      ProgressCallback? onReceiveProgress}) async {
     try {
       var response = await _dio.get(
         uri,
@@ -26,20 +24,22 @@ class HttpClient {
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
       );
-      return handleResponse(response, httpTransformer: httpTransformer);
-    } on Exception catch (e) {
-      return handleException(e);
+      // return BaseResponse();
+      return HttpResponse(code: 200, data: {});
+    } on DioError catch(e) {
+      throw AppException.create(e);
     }
   }
 
-  Future<HttpResponse> post(String uri,
-      {data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-        HttpTransformer? httpTransformer}) async {
+  Future<HttpResponse> post(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await _dio.post(
         uri,
@@ -50,20 +50,27 @@ class HttpClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      return handleResponse(response, httpTransformer: httpTransformer);
-    } on Exception catch (e) {
-      return handleException(e);
+      // return handleResponse(response, httpTransformer: httpTransformer);
+      print('++++++++');
+      print(response.data);
+      if(checkSuccessFn(response)){
+      }
+      // return HttpResponse(code: , data: data)
+      return HttpResponse(code: 200, data: data);
+    }  on DioError catch(e) {
+      throw AppException.create(e);
     }
   }
 
-  Future<HttpResponse> patch(String uri,
-      {data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-        HttpTransformer? httpTransformer}) async {
+  Future<HttpResponse> patch(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await _dio.patch(
         uri,
@@ -74,18 +81,20 @@ class HttpClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      return handleResponse(response, httpTransformer: httpTransformer);
-    } on Exception catch (e) {
-      return handleException(e);
+      // return handleResponse(response, httpTransformer: httpTransformer);
+      return HttpResponse(code: 200, data: data);
+    }  on DioError catch(e) {
+      throw AppException.create(e);
     }
   }
 
-  Future<HttpResponse> delete(String uri,
-      {data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        HttpTransformer? httpTransformer}) async {
+  Future<HttpResponse> delete(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       var response = await _dio.delete(
         uri,
@@ -94,18 +103,20 @@ class HttpClient {
         options: options,
         cancelToken: cancelToken,
       );
-      return handleResponse(response, httpTransformer: httpTransformer);
-    } on Exception catch (e) {
-      return handleException(e);
+      // return handleResponse(response, httpTransformer: httpTransformer);
+      return HttpResponse(code: 200, data: data);
+    } on DioError catch(e) {
+      throw AppException.create(e);
     }
   }
 
-  Future<HttpResponse> put(String uri,
-      {data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        HttpTransformer? httpTransformer}) async {
+  Future<HttpResponse> put(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       var response = await _dio.put(
         uri,
@@ -114,21 +125,24 @@ class HttpClient {
         options: options,
         cancelToken: cancelToken,
       );
-      return handleResponse(response, httpTransformer: httpTransformer);
-    } on Exception catch (e) {
-      return handleException(e);
+      // return handleResponse(response, httpTransformer: httpTransformer);
+      return HttpResponse(code: 200, data: data);
+    } on DioError catch(e) {
+      throw AppException.create(e);
     }
   }
 
-  Future<Response> download(String urlPath, savePath,
-      {ProgressCallback? onReceiveProgress,
-        Map<String, dynamic>? queryParameters,
-        CancelToken? cancelToken,
-        bool deleteOnError = true,
-        String lengthHeader = Headers.contentLengthHeader,
-        data,
-        Options? options,
-        HttpTransformer? httpTransformer}) async {
+  Future<Response> download(
+    String urlPath,
+    savePath, {
+    ProgressCallback? onReceiveProgress,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    bool deleteOnError = true,
+    String lengthHeader = Headers.contentLengthHeader,
+    data,
+    Options? options,
+  }) async {
     try {
       var response = await _dio.download(
         urlPath,
@@ -143,7 +157,7 @@ class HttpClient {
       );
       return response;
     } catch (e) {
-      throw e;
+      throw Exception(e);
     }
   }
 }

@@ -1,2 +1,2 @@
-import './src/http_config.dart';
-import './src/http_client.dart';
+export './src/http_config.dart';
+export './src/http_client.dart';
