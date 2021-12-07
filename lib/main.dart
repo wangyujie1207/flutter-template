@@ -18,6 +18,9 @@ import 'utils/hidekeyboard.dart';
 import 'utils/router_observer.dart';
 
 void main() async{
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
