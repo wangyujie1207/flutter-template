@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/serviceApi/spu_api.dart';
 import 'package:flutter_template/ui/widgets/loading_widget.dart';
 
 class ApplicationPage extends StatefulWidget {
@@ -23,7 +22,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
           const CLoading(),
           GestureDetector(
             onTap: () {
-              SpuApi().test();
             },
             child: Container(
               width: 100,
