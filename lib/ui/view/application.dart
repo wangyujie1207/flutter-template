@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/request/api/spu_api.dart';
+import 'package:flutter_template/serviceApi/spu_api.dart';
 import 'package:flutter_template/ui/widgets/loading_widget.dart';
 
 class ApplicationPage extends StatefulWidget {

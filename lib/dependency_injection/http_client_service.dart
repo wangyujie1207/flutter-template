@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_template/request/src/interceptor/token_check_interceptor.dart';
 import 'package:get/get.dart' hide Response;
 
-import 'src/http_client.dart';
-import 'src/http_config.dart';
+import '../request/src/http_client.dart';
+import '../request/src/http_config.dart';
 
 class HttpClientController extends GetxService {
   Future<HttpClient> init() async {

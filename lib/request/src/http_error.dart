@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart';
 
 /// 自定义异常
-class AppException implements Exception {
+class HttpException implements Exception {
   final String message;
   final int code;
 
-  AppException({required this.code, required this.message});
+  HttpException({required this.code, required this.message});
 
   @override
   String toString() {
     return "$code$message";
   }
 
-  factory AppException.create(DioError error) {
+  factory HttpException.create(DioError error) {
     switch (error.type) {
       case DioErrorType.cancel:
         return BadRequestException(-1, "请求取消");
@@ -56,24 +56,24 @@ class AppException implements Exception {
               case 505:
                 return UnauthorisedException(errCode, "不支持HTTP协议请求");
               default:
-                return AppException(
+                return HttpException(
                     code: errCode,
                     message: error.response?.statusMessage ?? "未知错误");
             }
           } on Exception catch (_) {
-            return AppException(code: -1, message: "未知错误");
+            return HttpException(code: -1, message: "未知错误");
           }
         }
       default:
         {
-          return AppException(code: -1, message: error.message);
+          return HttpException(code: -1, message: error.message);
         }
     }
   }
 }
 
 /// 请求错误
-class BadRequestException extends AppException {
+class BadRequestException extends HttpException {
   final int code;
   final String message;
 
@@ -82,7 +82,7 @@ class BadRequestException extends AppException {
 }
 
 /// 未认证异常
-class UnauthorisedException extends AppException {
+class UnauthorisedException extends HttpException {
   final int code;
   final String message;
 

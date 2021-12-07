@@ -1,7 +1,7 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_template/controllers/application_controller.dart';
 import 'package:flutter_template/lang/lang_service.dart';
-import 'package:flutter_template/request/http_client_service.dart';
+import 'package:flutter_template/dependency_injection/http_client_service.dart';
 import 'package:flutter_template/request/src/http_client.dart';
 import 'package:get/get.dart';
 

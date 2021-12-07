@@ -3,45 +3,31 @@ import 'package:flutter_template/request/src/http_error.dart';
 import 'app_dio.dart';
 import 'http_resp.dart';
 import 'http_config.dart';
+
+typedef JsonParse<T> = T Function(dynamic data);
 typedef IsSuccessResponse = bool Function(Response<dynamic> response);
+
 class HttpClient {
   late final AppDio _dio;
   final IsSuccessResponse checkSuccessFn;
 
-  HttpClient({BaseOptions? options, HttpConfig? dioConfig, required this.checkSuccessFn})
+  HttpClient(
+      {BaseOptions? options,
+      HttpConfig? dioConfig,
+      required this.checkSuccessFn})
       : _dio = AppDio(options: options, dioConfig: dioConfig);
 
-  Future<HttpResponse> get(String uri,
-      {Map<String, dynamic>? queryParameters,
+  Future<HttpResponse<T>> _request<T>(String uri,
+      {required String method,
+      dynamic data,
+      Map<String, dynamic>? queryParameters,
       Options? options,
+      JsonParse<T>? jsonParse,
       CancelToken? cancelToken,
+      ProgressCallback? onSendProgress,
       ProgressCallback? onReceiveProgress}) async {
     try {
-      var response = await _dio.get(
-        uri,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-        onReceiveProgress: onReceiveProgress,
-      );
-      // return BaseResponse();
-      return HttpResponse(code: 200, data: {});
-    } on DioError catch(e) {
-      throw AppException.create(e);
-    }
-  }
-
-  Future<HttpResponse> post(
-    String uri, {
-    data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    try {
-      var response = await _dio.post(
+      Response response = await _dio.request(
         uri,
         data: data,
         queryParameters: queryParameters,
@@ -50,86 +36,120 @@ class HttpClient {
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
       );
-      // return handleResponse(response, httpTransformer: httpTransformer);
-      print('++++++++');
-      print(response.data);
-      if(checkSuccessFn(response)){
+      int _code = response.data["code"] is int
+          ? response.data["code"]
+          : int.tryParse(response.data["code"]) ?? -1;
+      String _message = response.data["message"];
+      if (checkSuccessFn(response)) {
+        if (jsonParse != null) {
+          return HttpResponse<T>(
+              code: _code,
+              message: _message,
+              data: jsonParse(response.data["data"]));
+        } else {
+          return HttpResponse<T>(
+              code: _code, message: _message, data: response.data["data"]);
+        }
       }
-      // return HttpResponse(code: , data: data)
-      return HttpResponse(code: 200, data: data);
-    }  on DioError catch(e) {
-      throw AppException.create(e);
+      throw HttpException(code: _code, message: _message);
+    } on DioError catch (e) {
+      throw HttpException.create(e);
     }
   }
 
-  Future<HttpResponse> patch(
+  Future<HttpResponse<T>> get<T>(String uri,
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      JsonParse<T>? jsonParse,
+      CancelToken? cancelToken,
+      ProgressCallback? onReceiveProgress}) async {
+    return _request<T>(uri,
+        method: 'GET',
+        queryParameters: queryParameters,
+        options: options,
+        jsonParse: jsonParse,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress);
+  }
+
+  Future<HttpResponse<T>> post<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    JsonParse<T>? jsonParse,
     CancelToken? cancelToken,
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      var response = await _dio.patch(
-        uri,
+    return _request<T>(uri,
+        method: 'POST',
         data: data,
         queryParameters: queryParameters,
         options: options,
+        jsonParse: jsonParse,
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
-        onReceiveProgress: onReceiveProgress,
-      );
-      // return handleResponse(response, httpTransformer: httpTransformer);
-      return HttpResponse(code: 200, data: data);
-    }  on DioError catch(e) {
-      throw AppException.create(e);
-    }
+        onReceiveProgress: onReceiveProgress);
   }
 
-  Future<HttpResponse> delete(
+  Future<HttpResponse<T>> patch<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    JsonParse<T>? jsonParse,
     CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
-    try {
-      var response = await _dio.delete(
-        uri,
+    return _request<T>(uri,
+        method: 'PATCH',
         data: data,
         queryParameters: queryParameters,
         options: options,
+        jsonParse: jsonParse,
         cancelToken: cancelToken,
-      );
-      // return handleResponse(response, httpTransformer: httpTransformer);
-      return HttpResponse(code: 200, data: data);
-    } on DioError catch(e) {
-      throw AppException.create(e);
-    }
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress);
   }
 
-  Future<HttpResponse> put(
+  Future<HttpResponse<T>> delete<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    JsonParse<T>? jsonParse,
     CancelToken? cancelToken,
   }) async {
-    try {
-      var response = await _dio.put(
-        uri,
-        data: data,
-        queryParameters: queryParameters,
-        options: options,
-        cancelToken: cancelToken,
-      );
-      // return handleResponse(response, httpTransformer: httpTransformer);
-      return HttpResponse(code: 200, data: data);
-    } on DioError catch(e) {
-      throw AppException.create(e);
-    }
+    return _request<T>(
+      uri,
+      method: 'DELETE',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      jsonParse: jsonParse,
+      cancelToken: cancelToken,
+    );
+  }
+
+  Future<HttpResponse<T>> put<T>(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    JsonParse<T>? jsonParse,
+    CancelToken? cancelToken,
+  }) async {
+    return _request<T>(
+      uri,
+      method: 'PUT',
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      jsonParse: jsonParse,
+      cancelToken: cancelToken,
+    );
   }
 
   Future<Response> download(
