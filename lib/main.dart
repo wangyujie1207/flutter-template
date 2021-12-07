@@ -8,13 +8,12 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'controllers/application_controller.dart';
+import 'injection/dependency_injection.dart';
 import 'lang/app_translation.dart';
 import 'lang/lang_service.dart';
 import 'routes/routes.dart';
 import 'theme/theme.dart';
 import 'theme/theme_service.dart';
-import 'dependency_injection/dependency_injection.dart';
 import 'utils/hidekeyboard.dart';
 import 'utils/router_observer.dart';
 
