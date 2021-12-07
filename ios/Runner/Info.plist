@@ -2,6 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSAppleMusicUsageDescription</key>
+	<string>需要您的同意, APP才能访问媒体资料库</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>App需要您的同意,才能访问日历</string>
+	<key>NSCameraUsageDescription</key>
+	<string>App想要访问您的相机</string>
+	<key>NSContactsUsageDescription</key>
+	<string>App请求访问通讯录</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App需要您的同意,才能始终访问位置</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App需要您的同意, APP才能在使用期间访问位置</string>
+	<key>NSMotionUsageDescription</key>
+	<string>需要您的同意, APP才能访问运动与健身</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>App想要访问您的相册</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>需要您的同意, APP才能识别语音</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
