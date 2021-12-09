@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Themes {
-  static final lightTheme = ThemeData.light().copyWith(
+  // 抽取相同样式
+  // static const double _titleFontSize = 20;
+
+  static final ThemeData lightTheme = ThemeData(
     primaryColor: const Color(0xff667DF6),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     scaffoldBackgroundColor: const Color(0xffF9F8FD),
@@ -14,7 +17,7 @@ class Themes {
     )
   );
 
-  static final darkTheme = ThemeData.dark().copyWith(
+  static final ThemeData darkTheme = ThemeData(
       primaryColor: const Color(0xff667DF6),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: const Color(0xff20232C),
