@@ -48,6 +48,8 @@ dependencies:
   card_swiper: ^2.0.1
   qr_flutter: ^4.0.0
   permission_handler: ^8.3.0
+  flutter_qr_reader: ^1.0.5
+  country_code_picker: ^2.0.2
   #dio
   dio: ^4.0.4
 #  cookie_jar: 3.0.1
