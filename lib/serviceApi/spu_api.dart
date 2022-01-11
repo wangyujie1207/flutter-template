@@ -1,5 +1,4 @@
 import 'package:flutter_template/request/index.dart';
-import 'package:flutter_template/request/src/http_error.dart';
 import 'package:get/get.dart';
 
 class SpuApi {
@@ -11,6 +10,7 @@ class SpuApi {
     try {
       HttpResponse result = await httpClient.post(_goods);
     } on HttpException catch (e) {
+      print(e.message);
     }
   }
 }

@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 
+import 'toast.dart';
+
 class Verify {
   static bool strNoEmpty(String? value) {
     if (value == null) return false;
@@ -17,7 +19,7 @@ class Verify {
 void handlerCopy(String? text, {String successText = "复制成功"}) {
   if (text == null) return;
   Clipboard.setData(ClipboardData(text: text));
-  // showToast(successText);
+  showToast(successText);
 }
 
 String hideString(String? str, int start, int end,
