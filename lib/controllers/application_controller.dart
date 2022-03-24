@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/entries/app_version.dart';
+import 'package:flutter_template/request/index.dart';
 import 'package:flutter_template/ui/widgets/upgrade_dialog.dart';
 import 'package:flutter_template/utils/utils.dart';
 import 'package:get/get.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:r_upgrade/r_upgrade.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';
@@ -15,7 +16,7 @@ class ApplicationController extends GetxController {
 
   final _version = ''.obs;
 
-  get version => _version.value;
+  String get version => _version.value;
 
   set version(val) => _version.value = val;
 
@@ -24,8 +25,8 @@ class ApplicationController extends GetxController {
   final _url = ''.obs;
 
   final RxnInt upgradeId = RxnInt();
-
   final RxString route = ''.obs;
+  final Rxn<AppVersion> appData = Rxn();
 
   //获取系统版本
   getVersion() async {
@@ -37,12 +38,14 @@ class ApplicationController extends GetxController {
     if (!Verify.strNoEmpty(_version.value)) {
       await getVersion();
     }
-    // Response<BaseResp<AppVersion>> resp = await HttpService.to.getVersion();
-    Response resp = { } as Response;
-    if (resp.body!.code != 200) {
-      return false;
-    } else {
-      AppVersion data = resp.body!.data;
+    // return false;
+    try {
+      ResponseEntity<AppVersion> resp = await Get.find<HttpClient>().post(
+        '/version_info',
+        jsonParse: (data) => AppVersion.fromJson(data['version']),
+      );
+      AppVersion data = resp.data;
+      appData.value = resp.data;
       Version _currentVersion = Version.parse(_version.value);
       Version _latestVersion = Version(1, 0, 0);
       if (Platform.isIOS) {
@@ -57,48 +60,64 @@ class ApplicationController extends GetxController {
         _futureVersion.value = data.androidVersion!;
       }
       return _latestVersion > _currentVersion;
+    } on HttpException catch (e) {
+      return false;
     }
   }
 
   appUpgrade() async {
     bool _result = await needUpdate();
     if (_result) {
-      Get.dialog(
-        StreamBuilder<DownloadInfo>(
-            stream: RUpgrade.stream,
-            builder: (context, snapshot) {
-              return UpgradeDialog(
-                version: _futureVersion.value,
-                content: _content.value,
-                downloadInfo: snapshot.data,
-                onPressed: () async {
-                  if (Platform.isIOS) {
-                    launch(_url.value);
-                    Get.back();
-                  } else if (Platform.isAndroid) {
-                    if (snapshot.hasData) {
-                      RUpgrade.install(upgradeId.value!);
-                    } else {
-                      upgradeId.value = await RUpgrade.upgrade(_url.value,
-                          fileName:
-                          'DRLink-${DateTime.now().millisecondsSinceEpoch}.apk',
-                          isAutoRequestInstall: true,
-                          notificationStyle:
-                          NotificationStyle.speechAndPlanTime,
-                          useDownloadManager: false);
+      if (Platform.isAndroid) {
+        Get.dialog(
+          StreamBuilder<DownloadInfo>(
+              stream: RUpgrade.stream,
+              builder: (context, snapshot) {
+                return UpgradeDialog(
+                  version: _futureVersion.value,
+                  content: _content.value,
+                  downloadInfo: snapshot.data,
+                  onPressed: () async {
+                    if (Platform.isIOS) {
+                      launch(_url.value);
+                      Get.back();
+                    } else if (Platform.isAndroid) {
+                      if (snapshot.hasData) {
+                        RUpgrade.install(upgradeId.value!);
+                      } else {
+                        upgradeId.value = await RUpgrade.upgrade(_url.value,
+                            fileName:
+                            "TaiAn Trade-${DateTime.now().millisecondsSinceEpoch}.apk",
+                            isAutoRequestInstall: true,
+                            notificationStyle:
+                            NotificationStyle.speechAndPlanTime,
+                            useDownloadManager: false);
+                      }
                     }
-                  }
-                },
-              );
-            }),
-        barrierDismissible: false,
-      );
+                  },
+                );
+              }),
+          barrierDismissible: appData.value?.androidForce != 1,
+        );
+      } else if (Platform.isIOS) {
+        Get.dialog(
+          UpgradeDialog(
+            version: _futureVersion.value,
+            content: _content.value,
+            onPressed: () async {
+              launch(_url.value);
+              Get.back();
+            },
+          ),
+          barrierDismissible: appData.value?.iosForce != 1,
+        );
+      }
     }
   }
 
   @override
   void onInit() {
     super.onInit();
-    // this.appUpgrade();
+    appUpgrade();
   }
 }

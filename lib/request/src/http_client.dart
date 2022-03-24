@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_template/request/src/http_error.dart';
 import 'app_dio.dart';
+import 'http_error.dart';
 import 'http_resp.dart';
 import 'http_config.dart';
 
@@ -17,7 +17,7 @@ class HttpClient {
       required this.checkSuccessFn})
       : _dio = AppDio(options: options, dioConfig: dioConfig);
 
-  Future<HttpResponse<T>> _request<T>(String uri,
+  Future<ResponseEntity<T>> _request<T>(String uri,
       {required String method,
       dynamic data,
       Map<String, dynamic>? queryParameters,
@@ -31,7 +31,9 @@ class HttpClient {
         uri,
         data: data,
         queryParameters: queryParameters,
-        options: options,
+        options: options != null
+            ? options.copyWith(method: method)
+            : Options(method: method),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
@@ -42,12 +44,12 @@ class HttpClient {
       String _message = response.data["message"];
       if (checkSuccessFn(response)) {
         if (jsonParse != null) {
-          return HttpResponse<T>(
+          return ResponseEntity<T>(
               code: _code,
               message: _message,
               data: jsonParse(response.data["data"]));
         } else {
-          return HttpResponse<T>(
+          return ResponseEntity<T>(
               code: _code, message: _message, data: response.data["data"]);
         }
       }
@@ -57,7 +59,7 @@ class HttpClient {
     }
   }
 
-  Future<HttpResponse<T>> get<T>(String uri,
+  Future<ResponseEntity<T>> get<T>(String uri,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       JsonParse<T>? jsonParse,
@@ -72,7 +74,7 @@ class HttpClient {
         onReceiveProgress: onReceiveProgress);
   }
 
-  Future<HttpResponse<T>> post<T>(
+  Future<ResponseEntity<T>> post<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
@@ -93,7 +95,7 @@ class HttpClient {
         onReceiveProgress: onReceiveProgress);
   }
 
-  Future<HttpResponse<T>> patch<T>(
+  Future<ResponseEntity<T>> patch<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
@@ -114,7 +116,7 @@ class HttpClient {
         onReceiveProgress: onReceiveProgress);
   }
 
-  Future<HttpResponse<T>> delete<T>(
+  Future<ResponseEntity<T>> delete<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
@@ -133,7 +135,7 @@ class HttpClient {
     );
   }
 
-  Future<HttpResponse<T>> put<T>(
+  Future<ResponseEntity<T>> put<T>(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,

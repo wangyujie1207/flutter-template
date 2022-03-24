@@ -50,3 +50,13 @@ T? asT<T extends Object?>(dynamic value, [T? defaultValue]) {
 
   return defaultValue;
 }
+
+
+List<T> getBaseTypeList<T>(List<dynamic>? list){
+  List<T> result = [];
+  if(list == null) return [];
+  for (var item in list) {
+    result.add(asT<T>(item)!);
+  }
+  return result;
+}

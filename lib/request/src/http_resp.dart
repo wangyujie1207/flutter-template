@@ -1,9 +1,9 @@
-class HttpResponse<T> {
+class ResponseEntity<T> {
   int code;
   String? message;
   T data;
 
-  HttpResponse({required this.code, this.message, required this.data});
+  ResponseEntity({required this.code, this.message, required this.data});
 
   @override
   String toString() {

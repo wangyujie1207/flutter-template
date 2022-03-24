@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/services.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
 import 'toast.dart';
 
@@ -16,10 +17,10 @@ class Verify {
   }
 }
 
-void handlerCopy(String? text, {String successText = "复制成功"}) {
+void handlerCopy(String? text, {String? successText}) {
   if (text == null) return;
   Clipboard.setData(ClipboardData(text: text));
-  showToast(successText);
+  showToast(successText ?? 'copyTips'.tr);
 }
 
 String hideString(String? str, int start, int end,

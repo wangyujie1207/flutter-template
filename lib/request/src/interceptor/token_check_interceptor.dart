@@ -1,12 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_template/config/config.dart';
 import 'package:flutter_template/lang/lang_service.dart';
+import 'package:flutter_template/routes/routes.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get_storage/get_storage.dart';
 
 class TokenCheckInterceptor extends Interceptor {
   @override
   Future onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    options.headers["token"] = GetStorage().read('token');
+    print(GetStorage().read(Config.token));
+    options.headers["token"] = GetStorage().read(Config.token);
     options.headers["lang"] = LangService.to.localValue;
     return handler.next(options);
   }
@@ -19,11 +24,13 @@ class TokenCheckInterceptor extends Interceptor {
     // LogUtil.v(response.request.data, tag: 'data');
     // // LogUtil.v(response.data['code'], tag: 'response status code');
     // LogUtil.v(response, tag: 'response data');
-
-    // if (response.data['code'] == 403 && Get.currentRoute != Routes.LOGIN_START_PAGE) {
-    //   UserController.to.deleteCurrentUser();
+    //
+    // if (response.data['code'] == 403 &&
+    //     response.data['code'] == 401 &&
+    //     Get.currentRoute != RouteGet.login) {
+    //   UserController.to.logout();
     //   showToast(response.data['message']);
-    //   Get.offAllNamed(Routes.LOGIN_START_PAGE);
+    //   Get.offNamed(RouteGet.login);
     // }
     return handler.next(response);
   }
