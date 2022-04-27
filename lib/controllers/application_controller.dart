@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:cherry_request/cherry_request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/entries/app_version.dart';
-import 'package:flutter_template/request/index.dart';
 import 'package:flutter_template/ui/widgets/upgrade_dialog.dart';
 import 'package:flutter_template/utils/utils.dart';
 import 'package:get/get.dart';

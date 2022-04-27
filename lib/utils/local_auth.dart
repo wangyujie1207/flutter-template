@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:local_auth/auth_strings.dart';
 import 'package:local_auth/local_auth.dart';
-
+import 'package:local_auth_ios/types/auth_messages_ios.dart';
+import 'package:local_auth_android/types/auth_messages_android.dart';
 class LocalAuth {
   static LocalAuth? _instance;
 
@@ -61,12 +61,14 @@ class LocalAuth {
     );
     try {
       bool authenticated = await auth.authenticate(
-          localizedReason: 'authReason'.tr,
+        localizedReason: 'authReason'.tr,
+        authMessages: [iosStrings, androidStrings],
+        options: const AuthenticationOptions(
           useErrorDialogs: true,
-          androidAuthStrings: androidStrings,
-          iOSAuthStrings: iosStrings,
           biometricOnly: true,
-          stickyAuth: false);
+          stickyAuth: false,
+        ),
+      );
       return authenticated;
     } on PlatformException catch (e) {
       return false;
