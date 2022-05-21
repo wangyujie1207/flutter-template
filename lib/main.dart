@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, Widget? child){
           Widget _child = ScreenUtilInit(
             designSize: const Size(750, 1334),
-            builder: (context) => GestureDetector(
+            builder: (context, _) => GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () => hideKeyboard(context),
               child: child,
