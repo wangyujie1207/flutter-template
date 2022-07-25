@@ -4,32 +4,32 @@ import 'base.dart';
 class AppVersion {
   AppVersion({
     this.androidForce,
-    this.androidVersion,
+    required this.androidVersion,
     this.androidDownloadUrl,
     this.androidVersionNote,
     this.iosForce,
-    this.iosVersion,
+    required this.iosVersion,
     this.iosDownloadUrl,
     this.iosVersionNote,
   });
 
   factory AppVersion.fromJson(Map<String, dynamic> json) => AppVersion(
     androidForce: asT<double?>(json['android_force']),
-    androidVersion: asT<String?>(json['android_version']),
+    androidVersion: asT<String?>(json['android_version'])!,
     androidDownloadUrl: asT<String?>(json['android_download_url']),
     androidVersionNote: asT<String?>(json['android_version_note']),
     iosForce: asT<double?>(json['ios_force']),
-    iosVersion: asT<String?>(json['ios_version']),
+    iosVersion: asT<String>(json['ios_version'])!,
     iosDownloadUrl: asT<String?>(json['ios_download_url']),
     iosVersionNote: asT<String?>(json['ios_version_note']),
   );
 
   double? androidForce;
-  String? androidVersion;
+  String androidVersion;
   String? androidDownloadUrl;
   String? androidVersionNote;
   double? iosForce;
-  String? iosVersion;
+  String iosVersion;
   String? iosDownloadUrl;
   String? iosVersionNote;
 

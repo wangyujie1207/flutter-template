@@ -1,59 +1,22 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_template/ui/helper/duration_extension.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 
 import 'object_util.dart';
 
-class TimeUtil{
-  static TimeOfDay? stringConvertToTimeOfDay(String? string) {
-    if (ObjectUtil.isEmptyString(string)) return null;
+enum TimeFormatType { DHMS, HMS }
 
-    List<String> items = string!.split(":");
-    if (ObjectUtil.isEmptyList(items)) return null;
-
-    if (items.length != 2) return null;
-
-    TimeOfDay? timeOfDay;
-    try {
-      timeOfDay =
-          TimeOfDay(hour: int.parse(items[0]), minute: int.parse(items[1]));
-    } catch (e) {
-      timeOfDay = null;
-    }
-    return timeOfDay;
-  }
-
-  static String? timeOfDayConvertToString(TimeOfDay? timeOfDay) {
-    if (timeOfDay == null) return null;
-
-    String? hourString;
-    if (timeOfDay.hour < 10) {
-      hourString = "0" + "${timeOfDay.hour}";
-    } else {
-      hourString = "${timeOfDay.hour}";
-    }
-
-    String? minuteString;
-    if (timeOfDay.minute < 10) {
-      minuteString = "0" + "${timeOfDay.minute}";
-    } else {
-      minuteString = "${timeOfDay.minute}";
-    }
-
-    return hourString + ":" + minuteString;
-  }
-
+class TimeUtil {
   static String formatTime({String? formatter, DateTime? time}) {
-    String formatterString =
-    ObjectUtil.isEmptyString(formatter) ? "yyyy.MM.dd HH:mm:ss" : formatter!;
-
+    String formatterString = ObjectUtil.isEmptyString(formatter)
+        ? "yyyy-MM-dd HH:mm:ss"
+        : formatter!;
     var dateFormatter = DateFormat(formatterString);
-
     return dateFormatter.format(time ?? DateTime.now());
   }
 
   static DateTime? stringToDateTime(String dateString) {
     String formattedString = dateString.replaceAll(".", "-");
-
     DateTime? dateTime;
     try {
       dateTime = DateTime.parse(formattedString);
@@ -63,13 +26,38 @@ class TimeUtil{
     return dateTime;
   }
 
-//计算两个日期相差多少天
-  static int diffdaysBetweenTwoDate(DateTime startDate, DateTime endDate) {
-    return endDate.difference(startDate).inDays;
+  static String formatFromSecond(
+      int seconds, {
+        String day = ':',
+        String hour = ':',
+        String minute = ':',
+        String second = ':',
+        TimeFormatType mode = TimeFormatType.HMS,
+      }) {
+    Duration duration = Duration(seconds: seconds);
+    String d = duration.inDaysRest.toString().padLeft(2, '0');
+    String h = duration.inHoursRest.toString().padLeft(2, '0');
+    String m = duration.inMinutesRest.toString().padLeft(2, '0');
+    String s = duration.inSecondsRest.toString().padLeft(2, '0');
+    return mode == TimeFormatType.HMS
+        ? '$h$hour$m$minute$s'
+        : '$d$day$h$hour$m$minute$s';
   }
 
-  ///补零
-  static String zeroFill(int i) {
-    return i >= 10 ? "$i" : "0$i";
+  static Duration now2endTimeDiff(String endTime) {
+    DateTime _now = DateTime.now();
+    final DateTime _endTime = DateTime.tryParse(endTime) ?? _now;
+    if (_endTime.isAfter(_now)) {
+      Duration _result = _endTime.difference(_now);
+      return _result;
+    } else {
+      return const Duration(seconds: 0);
+    }
+  }
+
+  static Future<String> fromNow(String time,
+      [String pattern = 'yyyy-MM-dd hh:mm:ss']) async {
+    await Jiffy.locale("zh_cn");
+    return Jiffy(time, pattern).fromNow();
   }
 }

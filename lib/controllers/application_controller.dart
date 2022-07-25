@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:cherry_request/cherry_request.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template/entries/app_version.dart';
-import 'package:flutter_template/ui/widgets/upgrade_dialog.dart';
-import 'package:flutter_template/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:r_upgrade/r_upgrade.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';
+
+import '../entries/app_version.dart';
+import '../ui/widgets/upgrade_dialog.dart';
+import '../utils/utils.dart';
 
 class ApplicationController extends GetxController {
   static ApplicationController get to => Get.find();
@@ -52,12 +53,12 @@ class ApplicationController extends GetxController {
         _latestVersion = Version.parse(data.iosVersion);
         _content.value = data.iosVersionNote!;
         _url.value = data.iosDownloadUrl!;
-        _futureVersion.value = data.iosVersion!;
+        _futureVersion.value = data.iosVersion;
       } else if (Platform.isAndroid) {
         _latestVersion = Version.parse(data.androidVersion);
         _content.value = data.androidVersionNote!;
         _url.value = data.androidDownloadUrl!;
-        _futureVersion.value = data.androidVersion!;
+        _futureVersion.value = data.androidVersion;
       }
       return _latestVersion > _currentVersion;
     } on HttpException catch (e) {
