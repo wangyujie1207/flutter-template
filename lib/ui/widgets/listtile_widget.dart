@@ -10,21 +10,25 @@ class ListTileWidget extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final Color? splashColor;
+  final Color? contentColor;
+  final double? fontSize;
   final EdgeInsetsGeometry? padding;
   final GestureTapCallback? onTap;
 
   const ListTileWidget(
       {Key? key,
-      this.label = '',
-      this.height,
-      this.hasArrow = true,
-      this.hasBorder = false,
-      this.content,
-      this.prefix,
-      this.suffix,
-      this.splashColor,
-      this.padding,
-      this.onTap})
+        this.label = '',
+        this.height,
+        this.hasArrow = true,
+        this.hasBorder = false,
+        this.content,
+        this.prefix,
+        this.suffix,
+        this.splashColor,
+        this.contentColor,
+        this.fontSize,
+        this.padding,
+        this.onTap})
       : super(key: key);
 
   @override
@@ -50,18 +54,19 @@ class ListTileWidget extends StatelessWidget {
                 prefix ??
                     Text(label,
                         style: TextStyle(
-                            fontSize: 30.sp, color: const Color(0xff333333))),
+                            fontSize: fontSize ?? 30.sp,
+                            color: const Color(0xff333333))),
                 const Spacer(),
                 if (suffix != null) suffix!,
                 if (content != null)
                   content is String
                       ? Text(
-                          content,
-                          style: TextStyle(
-                            fontSize: 30.sp,
-                            color: const Color(0xff999999),
-                          ),
-                        )
+                    content,
+                    style: TextStyle(
+                      fontSize: fontSize ?? 30.sp,
+                      color: contentColor ?? const Color(0xff999999),
+                    ),
+                  )
                       : content,
                 if (hasArrow)
                   Padding(
