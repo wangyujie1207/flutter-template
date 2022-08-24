@@ -34,9 +34,9 @@ class ListTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 110.w,
+      height: height ?? 110.w,
       child: InkWell(
-        onTap: onTap ?? () {},
+        onTap: onTap,
         splashColor: splashColor,
         highlightColor: splashColor,
         child: Padding(
@@ -51,13 +51,13 @@ class ListTileWidget extends StatelessWidget {
             ),
             child: Row(
               children: [
-                prefix ??
-                    Text(label,
-                        style: TextStyle(
-                            fontSize: fontSize ?? 30.sp,
-                            color: const Color(0xff333333))),
-                const Spacer(),
-                if (suffix != null) suffix!,
+                Expanded(
+                  child: prefix ??
+                      Text(label,
+                          style: TextStyle(
+                              fontSize: fontSize ?? 30.sp,
+                              color: const Color(0xff333333))),
+                ),
                 if (content != null)
                   content is String
                       ? Text(
@@ -68,6 +68,7 @@ class ListTileWidget extends StatelessWidget {
                     ),
                   )
                       : content,
+                if (suffix != null) suffix!,
                 if (hasArrow)
                   Padding(
                     padding: const EdgeInsets.only(left: 10),
